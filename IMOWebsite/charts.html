@@ -1,0 +1,270 @@
+
+<!doctype HTML>
+<html>
+<head>
+    
+<link rel="shortcut icon" href="./icon/logo_imos1.png">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0">
+<title>IMOSecurity - Statystyki</title> 
+<link rel="stylesheet" type="text/css" href="css/css-1.css">
+<link href="./index_files/css" rel="stylesheet">
+<link href="bootstrap/bootstrap.css" rel="stylesheet">
+<link href="bootstrap/bootstrap.min.css" rel="stylesheet">
+<link href="bootstrap/_bootswatch.scss" rel="stylesheet">
+<link href="bootstrap/_variables.scss" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
+
+</head>
+<body>
+    <!-- nav bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <img src="icon/logo_imos1.png" alt="LOGO" height="42" width="42">
+  <a class="navbar-brand" href="#"><B>IMO</B>Security</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarColor03">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Strona Główna <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Wydarzenia</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">O nas</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Kontakt</a>
+      </li>
+    </ul>
+  Zalogowano jako:  <b> marek_braun</b>
+  </div>
+</nav>
+   
+<div id="container" style="width: 100%;">
+  <canvas id="canvas"></canvas>
+</div>
+
+<div id="container2" style="width: 100%;">
+    <canvas id="canvas2"></canvas>
+  </div>
+<!--
+<button id="randomizeData">Randomize Data</button>
+<button id="addDataset">Add Dataset</button>
+<button id="removeDataset">Remove Dataset</button>
+<button id="addData">Add Data</button>
+<button id="removeData">Remove Data</button>
+    -->
+    <!-- particles -->
+    <header class="header">
+      <ul class="header__meta">
+      </ul>
+      <div class="container">
+        <div class="header__introduction"> 
+      <canvas class="header__background" width="491" height="942" style="width: 100%; height: 100%;"></canvas>
+    </div></div></header>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js" integrity="sha256-xKeoJ50pzbUGkpQxDYHD7o7hxe0LaOGeguUidbq6vis=" crossorigin="anonymous"></script>
+
+
+    <script src="./index_files/particles.min.js.pobrane"></script>
+
+
+
+    
+
+    <script>
+
+
+
+Chart.defaults.global.defaultFontColor = "#fff";
+
+window.chartColors = {
+	red: 'rgb(255, 99, 132)',
+	orange: 'rgb(255, 159, 64)',
+	yellow: 'rgb(255, 205, 86)',
+	green: 'rgb(75, 192, 192)',
+	blue: 'rgb(54, 162, 235)',
+	purple: 'rgb(153, 102, 255)',
+	grey: 'rgb(201, 203, 207)'
+};
+
+
+
+      window.onload = function() {
+        Particles.init({
+          selector: '.header__background',
+          color: '#75A5B7',
+          maxParticles: 130,
+          connectParticles: true,
+          responsive: [
+            {
+              breakpoint: 768,
+              options: {
+                maxParticles: 80
+              }
+            }, {
+              breakpoint: 375,
+              options: {
+                maxParticles: 50
+              }
+            }
+          ]
+        });
+      };
+    </script>
+
+<script>
+
+
+var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+var color = Chart.helpers.color;
+
+function reloadChartOne() {
+
+
+const Http = new XMLHttpRequest();
+const url='http://192.168.137.1:3001/commonCookiesChart';
+Http.open("GET", url);
+Http.send();
+
+Http.onreadystatechange = (e) => {
+console.log(Http.responseText);
+  var mostCommonCookies = JSON.parse(Http.responseText);
+  mostCommonCookies.length = 10;
+  var labelsArray = [];
+  var valuesArray = [];
+  for (let key in mostCommonCookies) {
+      let domain = mostCommonCookies[key].sourceUrl.replace('http://','').replace('https://','').split(/[/?#]/)[0];
+      labelsArray.push(domain);
+      valuesArray.push(mostCommonCookies[key].total);
+  }
+
+  var barChartData = {
+    labels: labelsArray,
+    datasets: [{
+      label: 'Najczęściej występujące ciasteczka',
+      backgroundColor: color(window.chartColors.red).alpha(0.9).rgbString(),
+      borderColor: window.chartColors.red,
+      borderWidth: 1,
+      data: valuesArray
+    }]
+
+  };
+
+
+  var ctx = document.getElementById('canvas').getContext('2d');
+    window.myBar = new Chart(ctx, {
+      type: 'bar',
+      data: barChartData,
+      options: {
+        responsive: true,
+        legend: {
+          position: 'top',
+        },
+        title: {
+          display: true,
+          text: 'Baza najczęściej występujących ciasteczek'
+        },
+        animation: {
+          duration: 0
+        },
+        chartArea: {
+          backgroundColor: 'rgba(251, 85, 85, 0.4)'
+        }
+      }
+    });
+
+}
+
+}
+
+
+
+
+reloadChartOne();
+
+
+function reloadUnencryptedWebsitesChart() {
+
+  const Http = new XMLHttpRequest();
+const url='http://192.168.137.1:3001/commonUnencryptedWebsites';
+Http.open("GET", url);
+Http.send();
+
+Http.onreadystatechange = (e) => {
+console.log(Http.responseText);
+  var mostCommonUnencryptedWebsites = JSON.parse(Http.responseText);
+  mostCommonUnencryptedWebsites.length = 10;
+  var labelsArray = [];
+  var valuesArray = [];
+  for (let key in mostCommonUnencryptedWebsites) {
+      //let domain = mostCommonUnencryptedWebsites[key].siteUrl.replace('http://','').replace('https://','').split(/[/?#]/)[0];
+      labelsArray.push(mostCommonUnencryptedWebsites[key].siteUrl);
+      valuesArray.push(mostCommonUnencryptedWebsites[key].total);
+  }
+
+  var barChartData = {
+    labels: labelsArray,
+    datasets: [{
+      label: 'Najpopularniejsze nieszyfrowane strony',
+      backgroundColor: color(window.chartColors.green).alpha(0.9).rgbString(),
+      borderColor: window.chartColors.green,
+      borderWidth: 1,
+      data: valuesArray
+    }]
+
+  };
+
+
+  var ctx = document.getElementById('canvas2').getContext('2d');
+    window.myBar = new Chart(ctx, {
+      type: 'bar',
+      data: barChartData,
+      options: {
+        responsive: true,
+        legend: {
+          position: 'top',
+        },
+        title: {
+          display: true,
+          text: "Baza nieszyfrowanych witryn"
+        },
+        animation: {
+          duration: 0
+        },
+        chartArea: {
+          backgroundColor: 'rgba(251, 85, 85, 0.4)'
+        }
+      }
+    });
+
+}
+}
+
+
+reloadUnencryptedWebsitesChart();
+
+setInterval(reloadChartOne, 2000);
+setInterval(reloadUnencryptedWebsitesChart, 1000);
+
+/*
+  var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  var color = Chart.helpers.color;
+  */
+
+  window.onload = function() {
+    
+
+  };
+</script>
+    
+    
+
+</body>
+</html>
